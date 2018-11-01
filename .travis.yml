@@ -1,0 +1,12 @@
+---
+language: go
+go:
+- 1.8.x
+- 1.9.x
+- 1.10.x
+
+install:
+- curl --silent --location https://goo.gl/g1CpPX | bash -s v1.0.1
+
+script:
+- ginkgo -r --nodes 4 --randomizeAllSpecs --randomizeSuites --race --trace
