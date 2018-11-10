@@ -23,18 +23,19 @@ package bunt_test
 import (
 	"fmt"
 
-	. "github.com/HeavyWombat/gonvenience/pkg/v1/bunt"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	. "github.com/HeavyWombat/gonvenience/pkg/v1/bunt"
 )
 
 var _ = Describe("Bunt tests", func() {
-	Context("Helper functions", func() {
-		BeforeEach(func() {
-			ColorSetting = ON
-			TrueColorSetting = ON
-		})
+	BeforeEach(func() {
+		ColorSetting = ON
+		TrueColorSetting = ON
+	})
 
+	Context("Helper functions", func() {
 		It("should be able to break up an existing string with colors in its respective parts", func() {
 			sample := fmt.Sprintf("[%s] This is a %s with various %s combined in one %s:\n(%s)",
 				Colorize("Info", Green),
