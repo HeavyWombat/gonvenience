@@ -89,6 +89,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:3f3a05ae0b95893d90b9b3b5afdb79a9b3d96e4e36e099d841ae602e4aca0da8"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  pruneopts = "NUT"
+  revision = "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
+
+[[projects]]
+  branch = "master"
   digest = "1:5193d913046443e59093d66a97a40c51f4a5ea4ceba60f3b3ecf89694de5d16f"
   name = "golang.org/x/net"
   packages = [
@@ -101,9 +109,12 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:5ee70f85e91d870b68af05a6d0f26e202d097b1ddf92587f04594689876782dc"
+  digest = "1:15c44ebe33e556cdaf47e52b1e913aa15ce7aab47e565569319e6f89767193ff"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = [
+    "unix",
+    "windows",
+  ]
   pruneopts = "NUT"
   revision = "93218def8b18e66adbdab3eca8ec334700329f1f"
 
@@ -167,6 +178,7 @@
     "github.com/mattn/go-isatty",
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
+    "golang.org/x/crypto/ssh/terminal",
     "gopkg.in/fsnotify.v1",
     "gopkg.in/yaml.v2",
   ]
