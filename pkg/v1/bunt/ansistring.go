@@ -125,12 +125,9 @@ func parseSettings(input []string) (uint32, error) {
 				uint32(settings[4])<<0
 			settings = settings[5:]
 
-		case settings[0] <= 4:
+		default:
 			result |= uint32(settings[0]) << 24
 			settings = settings[1:]
-
-		default:
-			panic("not implemented yet")
 		}
 	}
 
