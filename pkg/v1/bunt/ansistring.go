@@ -44,6 +44,10 @@ type marker struct {
 }
 
 func (a *ansiString) String() string {
+	if !UseColors() {
+		return a.text
+	}
+
 	result := a.text
 	offset := 0
 
