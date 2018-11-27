@@ -40,7 +40,15 @@
   version = "v0.0.4"
 
 [[projects]]
-  digest = "1:0be1cd4c73d5e22a30edcf32a18e9809a370a7a4a52c4f41a86070b34da93fef"
+  branch = "master"
+  digest = "1:2d209eb757bb4101584c2618becd4026593509343ce55491233fd090faa1f1da"
+  name = "github.com/mitchellh/go-ps"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "4fdf99ab29366514c69ccccddab5dc58b8d84062"
+
+[[projects]]
+  digest = "1:cdc5cfc04dd0b98f86433207fe6d9879757c46734441a08886acc11251c7ed4a"
   name = "github.com/onsi/ginkgo"
   packages = [
     ".",
@@ -63,11 +71,11 @@
     "types",
   ]
   pruneopts = "NUT"
-  revision = "3774a09d95489ccaa16032e0770d08ea77ba6184"
-  version = "v1.6.0"
+  revision = "2e1be8f7d90e9d3e3e58b0ce470f2f14d075406f"
+  version = "v1.7.0"
 
 [[projects]]
-  digest = "1:95f40a9db820078d1795c7ba2d476016aca05dc4267eaf6752a925e437cb351f"
+  digest = "1:0db10c512b410a1ecd8845e31db52622c08b76198f7ab76afb25319c84a7fd4b"
   name = "github.com/onsi/gomega"
   packages = [
     ".",
@@ -84,16 +92,16 @@
     "types",
   ]
   pruneopts = "NUT"
-  revision = "7615b9433f86a8bdf29709bf288bc4fd0636a369"
-  version = "v1.4.2"
+  revision = "65fb64232476ad9046e57c26cd0bff3d3a8dc6cd"
+  version = "v1.4.3"
 
 [[projects]]
   branch = "master"
-  digest = "1:3f3a05ae0b95893d90b9b3b5afdb79a9b3d96e4e36e099d841ae602e4aca0da8"
+  digest = "1:38f553aff0273ad6f367cb0a0f8b6eecbaef8dc6cb8b50e57b6a81c1d5b1e332"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
   pruneopts = "NUT"
-  revision = "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
+  revision = "e657309f52e71501f9934566ac06dc5c2f7f11a1"
 
 [[projects]]
   branch = "master"
@@ -109,14 +117,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:15c44ebe33e556cdaf47e52b1e913aa15ce7aab47e565569319e6f89767193ff"
+  digest = "1:710483a12b766fb0e99ab26cbf6f82df2d958e94cb28890fcb2db96f76d39762"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "NUT"
-  revision = "93218def8b18e66adbdab3eca8ec334700329f1f"
+  revision = "62eef0e2fa9b2c385f7b2778e763486da6880d37"
 
 [[projects]]
   digest = "1:7c61a813b250ba8bb02bebb0382e6c3d00e04da2b577dc58985b86312fb89ffd"
@@ -176,6 +184,7 @@
     "github.com/lucasb-eyer/go-colorful",
     "github.com/mattn/go-ciede2000",
     "github.com/mattn/go-isatty",
+    "github.com/mitchellh/go-ps",
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
     "golang.org/x/crypto/ssh/terminal",
