@@ -28,6 +28,7 @@ import (
 	"os"
 
 	isatty "github.com/mattn/go-isatty"
+	ps "github.com/mitchellh/go-ps"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -131,4 +132,17 @@ func IsTrueColor() bool {
 	}
 
 	return *isTrueColor
+}
+
+// IsGardenContainer returns whether the current process is started in the process
+// tree of garden container (https://github.com/cloudfoundry/garden).
+func IsGardenContainer() bool {
+	if process, err := ps.FindProcess(1); err == nil {
+		switch process.Executable() {
+		case "garden-init":
+			return true
+		}
+	}
+
+	return false
 }
