@@ -1,4 +1,4 @@
-// Copyright © 2018 Matthias Diester
+// Copyright © 2018 The Homeport Team
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
 package neat_test
 
 import (
-	. "github.com/HeavyWombat/gonvenience/pkg/v1/neat"
+	. "github.com/homeport/gonvenience/pkg/v1/neat"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -31,9 +31,9 @@ var _ = Describe("Table formatting", func() {
 	Context("Process two-dimensional slices as tables to be printed", func() {
 		It("should work for simplest of tables with no additional formatting", func() {
 			input := [][]string{
-				[]string{"eins", "zwei", "drei"},
-				[]string{"one", "two", "three"},
-				[]string{"un", "deux", "trois"},
+				{"eins", "zwei", "drei"},
+				{"one", "two", "three"},
+				{"un", "deux", "trois"},
 			}
 
 			expectedResult := `eins zwei drei
@@ -48,9 +48,9 @@ un   deux trois
 
 		It("should work with additional formatting for inner borders", func() {
 			input := [][]string{
-				[]string{"eins", "zwei", "drei"},
-				[]string{"one", "two", "three"},
-				[]string{"un", "deux", "trois"},
+				{"eins", "zwei", "drei"},
+				{"one", "two", "three"},
+				{"un", "deux", "trois"},
 			}
 
 			expectedResult := `eins │ zwei │ drei
@@ -65,9 +65,9 @@ un   │ deux │ trois
 
 		It("should work with additional formatting for row padding", func() {
 			input := [][]string{
-				[]string{"eins", "zwei", "drei"},
-				[]string{"one", "two", "three"},
-				[]string{"un", "deux", "trois"},
+				{"eins", "zwei", "drei"},
+				{"one", "two", "three"},
+				{"un", "deux", "trois"},
 			}
 
 			expectedResult := `eins                      zwei                      drei
@@ -82,10 +82,10 @@ un                        deux                      trois
 
 		It("should work with additional formatting for alignment", func() {
 			input := [][]string{
-				[]string{"eins", "zwei", "drei", "vier", "fünf"},
-				[]string{"one", "two", "three", "four", "five"},
-				[]string{"un", "deux", "trois", "quatre", "cinq"},
-				[]string{"uno", "dos", "tres", "cuatro", "cinco"},
+				{"eins", "zwei", "drei", "vier", "fünf"},
+				{"one", "two", "three", "four", "five"},
+				{"un", "deux", "trois", "quatre", "cinq"},
+				{"uno", "dos", "tres", "cuatro", "cinco"},
 			}
 
 			expectedResult := `eins zwei drei   vier   fünf
@@ -101,8 +101,8 @@ uno   dos tres  cuatro cinco
 
 		It("should error if a row would exceed the desired table width", func() {
 			input := [][]string{
-				[]string{"#1", "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum."},
-				[]string{"#2", "Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."},
+				{"#1", "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum."},
+				{"#2", "Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."},
 			}
 
 			tableString, err := Table(input, DesiredWidth(120))
@@ -118,8 +118,8 @@ uno   dos tres  cuatro cinco
 
 		It("should error if imbalanced table is provided", func() {
 			tableString, err := Table([][]string{
-				[]string{"eins", "zwei", "drei", "vier", "fünf"},
-				[]string{"one", "two", "three", "four"},
+				{"eins", "zwei", "drei", "vier", "fünf"},
+				{"one", "two", "three", "four"},
 			})
 			Expect(err).Should(MatchError(&ImbalancedTableError{}))
 			Expect(tableString).To(BeEquivalentTo(""))
@@ -127,8 +127,8 @@ uno   dos tres  cuatro cinco
 
 		It("should error if a column index based table option is out of bounds", func() {
 			tableString, err := Table([][]string{
-				[]string{"eins", "zwei", "drei", "vier"},
-				[]string{"one", "two", "three", "four"},
+				{"eins", "zwei", "drei", "vier"},
+				{"one", "two", "three", "four"},
 			}, AlignCenter(4))
 			Expect(err).Should(MatchError(&ColumnIndexIsOutOfBoundsError{4}))
 			Expect(tableString).To(BeEquivalentTo(""))

@@ -1,4 +1,4 @@
-// Copyright © 2018 Matthias Diester
+// Copyright © 2018 The Homeport Team
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	. "github.com/HeavyWombat/gonvenience/pkg/v1/bunt"
+	. "github.com/homeport/gonvenience/pkg/v1/bunt"
 )
 
 var _ = Describe("Bunt tests", func() {
@@ -42,7 +42,7 @@ var _ = Describe("Bunt tests", func() {
 				Style("text", Italic),
 				Style("styles", Bold),
 				Colorize(`"string"`, Magenta, Bold),
-				Colorize("https://github.com/HeavyWombat/gonvenience/pkg/v1/bunt", CornflowerBlue, Italic, Underline))
+				Colorize("https://github.com/homeport/gonvenience/pkg/v1/bunt", CornflowerBlue, Italic, Underline))
 
 			result, err := BreakUpStringIntoColorSegments(sample)
 			Expect(err).To(BeNil())
@@ -57,7 +57,7 @@ var _ = Describe("Bunt tests", func() {
 				Segment{Data: `"string"`, Attributes: []Attribute{1, 38, 2, 255, 0, 255}},
 				Segment{Data: ":\n"},
 				Segment{Data: "("},
-				Segment{Data: "https://github.com/HeavyWombat/gonvenience/pkg/v1/bunt", Attributes: []Attribute{3, 4, 38, 2, 100, 149, 237}},
+				Segment{Data: "https://github.com/homeport/gonvenience/pkg/v1/bunt", Attributes: []Attribute{3, 4, 38, 2, 100, 149, 237}},
 				Segment{Data: ")"},
 			}
 
