@@ -74,8 +74,10 @@ var defaultElapsedTimeColor = bunt.DimGray
 
 // ProgressIndicator is a handle to a progress indicator (spinner).
 type ProgressIndicator struct {
-	out  io.Writer
-	text string
+	out    io.Writer
+	format string
+	args   []interface{}
+
 	spin bool
 
 	start   time.Time
@@ -90,10 +92,11 @@ type ProgressIndicator struct {
 // NewProgressIndicator creates a new progress indicator handle. The provided
 // text is shown as long as the progress indicator runs, or if new text is
 // supplied during runtime.
-func NewProgressIndicator(text string) *ProgressIndicator {
+func NewProgressIndicator(format string, args ...interface{}) *ProgressIndicator {
 	return &ProgressIndicator{
 		out:          os.Stdout,
-		text:         text,
+		format:       format,
+		args:         args,
 		spin:         term.IsTerminal() && !term.IsDumbTerminal(),
 		timeout:      0 * time.Second,
 		timeInfoText: TimeInfoText,
@@ -124,7 +127,7 @@ func (pi *ProgressIndicator) Start() *ProgressIndicator {
 					break
 				}
 
-				mainContentText := bunt.Sprint(pi.text)
+				mainContentText := removeLineFeeds(bunt.Sprintf(pi.format, pi.args...))
 				elapsedTimeText, elapsedTimeColor := pi.timeInfoText(elapsedTime)
 
 				padding := term.GetTerminalWidth() - 3 -
@@ -151,19 +154,36 @@ func (pi *ProgressIndicator) Start() *ProgressIndicator {
 		}()
 
 	} else {
-		bunt.Println(pi.text)
+		bunt.Fprintf(pi.out, pi.format, pi.args...)
+		bunt.Fprintln(pi.out)
 	}
 
 	return pi
 }
 
+// Stop stops the progress indicator by clearing the line one last time
+func (pi *ProgressIndicator) Stop() bool {
+	if x := atomic.SwapUint64(&pi.running, 0); x > 0 {
+		if pi.spin {
+			term.ShowCursor()
+			bunt.Fprint(pi.out, resetLine)
+		}
+
+		return true
+	}
+
+	return false
+}
+
 // SetText updates the waiting text.
-func (pi *ProgressIndicator) SetText(text string) {
-	if text != pi.text {
-		pi.text = text
+func (pi *ProgressIndicator) SetText(format string, args ...interface{}) {
+	if bunt.Sprintf(format, args...) != bunt.Sprintf(pi.format, pi.args...) {
+		pi.format = format
+		pi.args = args
 
 		if !pi.spin {
-			bunt.Println(pi.text)
+			bunt.Fprintf(pi.out, pi.format, pi.args...)
+			bunt.Fprintln(pi.out)
 		}
 	}
 }
@@ -189,24 +209,13 @@ func (pi *ProgressIndicator) SetTimeInfoTextFunc(f func(time.Duration) (string, 
 }
 
 // Done stops the progress indicator.
-func (pi *ProgressIndicator) Done(texts ...string) bool {
-	if x := atomic.SwapUint64(&pi.running, 0); x > 0 {
-		term.ShowCursor()
+func (pi *ProgressIndicator) Done(format string, args ...interface{}) bool {
+	defer func() {
+		bunt.Fprintf(pi.out, format, args...)
+		bunt.Fprintln(pi.out)
+	}()
 
-		bunt.Fprint(pi.out, resetLine)
-
-		if len(texts) > 0 {
-			for _, text := range texts {
-				bunt.Fprint(pi.out, text)
-			}
-
-			bunt.Fprint(pi.out, "\n")
-		}
-
-		return true
-	}
-
-	return false
+	return pi.Stop()
 }
 
 func (pi *ProgressIndicator) nextSymbol() string {
@@ -253,4 +262,8 @@ func humanReadableDuration(duration time.Duration) string {
 	}
 
 	return strings.Join(parts, " ")
+}
+
+func removeLineFeeds(input string) string {
+	return strings.Replace(input, "\n", " ", -1)
 }
