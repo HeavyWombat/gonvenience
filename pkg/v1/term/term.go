@@ -25,11 +25,17 @@ example to get the current terminal width or a reasonable fallback.
 package term
 
 import (
+	"fmt"
 	"os"
 
-	isatty "github.com/mattn/go-isatty"
-	ps "github.com/mitchellh/go-ps"
+	"github.com/mattn/go-isatty"
+	"github.com/mitchellh/go-ps"
 	"golang.org/x/crypto/ssh/terminal"
+)
+
+const (
+	hideCursor = "\x1b[?25l"
+	showCursor = "\x1b[?25h"
 )
 
 // DefaultTerminalWidth is the default fallback terminal width.
@@ -119,4 +125,14 @@ func IsGardenContainer() bool {
 	}
 
 	return false
+}
+
+// HideCursor sends the ANSI sequence to hide the cursor symbol
+func HideCursor() {
+	fmt.Print(hideCursor)
+}
+
+// ShowCursor sends the ANSI sequence to show the cursor symbol
+func ShowCursor() {
+	fmt.Print(showCursor)
 }

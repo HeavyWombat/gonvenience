@@ -66,8 +66,6 @@ import (
 )
 
 const resetLine = "\r\x1b[K"
-const hideCursor = "\x1b[?25l"
-const showCursor = "\x1b[?25h"
 const refreshIntervalInMs = 250
 
 var symbols = []rune(`⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏`)
@@ -110,7 +108,9 @@ func (pi *ProgressIndicator) Start() *ProgressIndicator {
 
 	pi.start = time.Now()
 	atomic.StoreUint64(&pi.running, 1)
-	bunt.Fprint(pi.out, hideCursor)
+
+	term.HideCursor()
+
 	go func() {
 		for atomic.LoadUint64(&pi.running) > 0 {
 			elapsedTime := time.Since(pi.start)
@@ -178,7 +178,8 @@ func (pi *ProgressIndicator) SetTimeInfoTextFunc(f func(time.Duration) (string, 
 // Done stops the progress indicator.
 func (pi *ProgressIndicator) Done(texts ...string) bool {
 	if x := atomic.SwapUint64(&pi.running, 0); x > 0 {
-		bunt.Fprint(pi.out, showCursor)
+		term.ShowCursor()
+
 		bunt.Fprint(pi.out, resetLine)
 
 		if len(texts) > 0 {
