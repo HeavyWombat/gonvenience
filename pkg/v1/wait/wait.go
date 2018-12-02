@@ -76,6 +76,7 @@ var defaultElapsedTimeColor = bunt.DimGray
 type ProgressIndicator struct {
 	out  io.Writer
 	text string
+	spin bool
 
 	start   time.Time
 	running uint64
@@ -93,6 +94,7 @@ func NewProgressIndicator(text string) *ProgressIndicator {
 	return &ProgressIndicator{
 		out:          os.Stdout,
 		text:         text,
+		spin:         term.IsTerminal() && !term.IsDumbTerminal(),
 		timeout:      0 * time.Second,
 		timeInfoText: TimeInfoText,
 	}
@@ -109,50 +111,61 @@ func (pi *ProgressIndicator) Start() *ProgressIndicator {
 	pi.start = time.Now()
 	atomic.StoreUint64(&pi.running, 1)
 
-	term.HideCursor()
+	if pi.spin {
+		term.HideCursor()
 
-	go func() {
-		for atomic.LoadUint64(&pi.running) > 0 {
-			elapsedTime := time.Since(pi.start)
+		go func() {
+			for atomic.LoadUint64(&pi.running) > 0 {
+				elapsedTime := time.Since(pi.start)
 
-			// Timeout reached, stopping the progress indicator
-			if pi.timeout > time.Nanosecond && elapsedTime > pi.timeout {
-				pi.Done("timeout occurred")
-				break
+				// Timeout reached, stopping the progress indicator
+				if pi.timeout > time.Nanosecond && elapsedTime > pi.timeout {
+					pi.Done("timeout occurred")
+					break
+				}
+
+				mainContentText := bunt.Sprint(pi.text)
+				elapsedTimeText, elapsedTimeColor := pi.timeInfoText(elapsedTime)
+
+				padding := term.GetTerminalWidth() - 3 -
+					bunt.PlainTextLength(mainContentText) -
+					bunt.PlainTextLength(elapsedTimeText)
+
+				// In case a timeout is set, smoothly blend the time info text color from
+				// the provided color into red depending on how much time is left
+				if pi.timeout > time.Nanosecond {
+					// Use smooth curved gradient: http://fooplot.com/?lang=en#W3sidHlwZSI6MCwiZXEiOiIoMS1jb3MoeF4yKjMuMTQxNSkpLzIiLCJjb2xvciI6IiMwMDAwMDAifSx7InR5cGUiOjEwMDAsIndpbmRvdyI6WyIwIiwiMSIsIjAiLCIxIl19XQ--
+					blendFactor := 0.5 * (1.0 - math.Cos(math.Pow(elapsedTime.Seconds()/pi.timeout.Seconds(), 2)*math.Pi))
+					elapsedTimeColor = elapsedTimeColor.BlendLab(bunt.Red, blendFactor)
+				}
+
+				bunt.Fprint(pi.out,
+					resetLine, " ", pi.nextSymbol(), " ",
+					mainContentText,
+					strings.Repeat(" ", padding),
+					bunt.Colorize(elapsedTimeText, elapsedTimeColor),
+				)
+
+				time.Sleep(refreshIntervalInMs * time.Millisecond)
 			}
+		}()
 
-			mainContentText := bunt.Sprint(pi.text)
-			elapsedTimeText, elapsedTimeColor := pi.timeInfoText(elapsedTime)
-
-			padding := term.GetTerminalWidth() - 3 -
-				bunt.PlainTextLength(mainContentText) -
-				bunt.PlainTextLength(elapsedTimeText)
-
-			// In case a timeout is set, smoothly blend the time info text color from
-			// the provided color into red depending on how much time is left
-			if pi.timeout > time.Nanosecond {
-				// Use smooth curved gradient: http://fooplot.com/?lang=en#W3sidHlwZSI6MCwiZXEiOiIoMS1jb3MoeF4yKjMuMTQxNSkpLzIiLCJjb2xvciI6IiMwMDAwMDAifSx7InR5cGUiOjEwMDAsIndpbmRvdyI6WyIwIiwiMSIsIjAiLCIxIl19XQ--
-				blendFactor := 0.5 * (1.0 - math.Cos(math.Pow(elapsedTime.Seconds()/pi.timeout.Seconds(), 2)*math.Pi))
-				elapsedTimeColor = elapsedTimeColor.BlendLab(bunt.Red, blendFactor)
-			}
-
-			bunt.Fprint(pi.out,
-				resetLine, " ", pi.nextSymbol(), " ",
-				mainContentText,
-				strings.Repeat(" ", padding),
-				bunt.Colorize(elapsedTimeText, elapsedTimeColor),
-			)
-
-			time.Sleep(refreshIntervalInMs * time.Millisecond)
-		}
-	}()
+	} else {
+		bunt.Println(pi.text)
+	}
 
 	return pi
 }
 
 // SetText updates the waiting text.
 func (pi *ProgressIndicator) SetText(text string) {
-	pi.text = text
+	if text != pi.text {
+		pi.text = text
+
+		if !pi.spin {
+			bunt.Println(pi.text)
+		}
+	}
 }
 
 // SetOutputWriter sets the output writer to used to print the progress
