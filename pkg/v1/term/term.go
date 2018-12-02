@@ -44,18 +44,6 @@ var FixedTerminalWidth = -1
 // FixedTerminalHeight allows a manual fixed override of the terminal height.
 var FixedTerminalHeight = -1
 
-// isDumbTerminal points to true if the current terminal has limited support for
-// escape sequences, false otherwise, or nil if uninitialised.
-var isDumbTerminal *bool
-
-// isTerminal points to true if the current STDOUT stream writes to a terminal
-// (not a redirect), false otherwise, or nil if uninitialised.
-var isTerminal *bool
-
-// isTrueColor points to true if the current terminal reports to support 24-bit
-// colors, false otherwise, or nil if uninitialised.
-var isTrueColor *bool
-
 // GetTerminalWidth return the terminal width (available characters per line)
 func GetTerminalWidth() int {
 	width, _ := GetTerminalSize()
@@ -101,37 +89,23 @@ func GetTerminalSize() (int, int) {
 
 // IsDumbTerminal returns whether the current terminal has a limited feature set
 func IsDumbTerminal() bool {
-	if isDumbTerminal == nil {
-		isTermDumbCheck := os.Getenv("TERM") == "dumb"
-		isDumbTerminal = &isTermDumbCheck
-	}
-
-	return *isDumbTerminal
+	return os.Getenv("TERM") == "dumb"
 }
 
 // IsTerminal returns whether this program runs in a terminal and not in a pipe
 func IsTerminal() bool {
-	if isTerminal == nil {
-		isTerminalCheck := isatty.IsTerminal(os.Stdout.Fd()) || isatty.IsCygwinTerminal(os.Stdout.Fd())
-		isTerminal = &isTerminalCheck
-	}
-
-	return *isTerminal
+	return isatty.IsTerminal(os.Stdout.Fd()) || isatty.IsCygwinTerminal(os.Stdout.Fd())
 }
 
 // IsTrueColor returns whether the current terminal supports 24 bit colors
 func IsTrueColor() bool {
-	if isTrueColor == nil {
-		var isTrueColorCheck = false
-		switch os.Getenv("COLORTERM") {
-		case "truecolor", "24bit":
-			isTrueColorCheck = true
-		}
+	switch os.Getenv("COLORTERM") {
+	case "truecolor", "24bit":
+		return true
 
-		isTrueColor = &isTrueColorCheck
+	default:
+		return false
 	}
-
-	return *isTrueColor
 }
 
 // IsGardenContainer returns whether the current process is started in the process
