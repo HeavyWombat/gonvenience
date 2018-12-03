@@ -41,6 +41,11 @@ var _ = Describe("ANSI string tests", func() {
 			Expect(Sprint(alreadyStyledText)).To(BeEquivalentTo(alreadyStyledText))
 		})
 
+		It("should preserve already existing colors in an input string in Sprint function", func() {
+			alreadyStyledText := "String with existing \x1b[1;91mcolored\x1b[0m text elements."
+			Expect(Sprint(alreadyStyledText)).To(BeEquivalentTo(alreadyStyledText))
+		})
+
 		It("should translate *bold* syntax into styled text in Sprint function", func() {
 			Expect(Sprint(">>> *bold* <<<")).To(BeEquivalentTo(
 				fmt.Sprintf(">>> %s <<<",
