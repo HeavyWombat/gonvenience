@@ -66,6 +66,13 @@ func VertialBarSeparator() TableOption {
 	}
 }
 
+// CustomSeparator set a custom separator string (other than the default single space)
+func CustomSeparator(separator string) TableOption {
+	return func(opts *options) {
+		opts.separator = separator
+	}
+}
+
 func DesiredWidth(width int) TableOption {
 	return func(opts *options) {
 		opts.desiredRowWidth = width
