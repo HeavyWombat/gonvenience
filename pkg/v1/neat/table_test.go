@@ -63,6 +63,23 @@ un   │ deux │ trois
 			Expect(tableString).To(BeEquivalentTo(expectedResult))
 		})
 
+		It("should work with a custom separator string", func() {
+			input := [][]string{
+				{"eins", "zwei", "drei"},
+				{"one", "two", "three"},
+				{"un", "deux", "trois"},
+			}
+
+			expectedResult := `eins / zwei / drei
+one  / two  / three
+un   / deux / trois
+`
+
+			tableString, err := Table(input, CustomSeparator(" / "))
+			Expect(err).ToNot(HaveOccurred())
+			Expect(tableString).To(BeEquivalentTo(expectedResult))
+		})
+
 		It("should work with additional formatting for row padding", func() {
 			input := [][]string{
 				{"eins", "zwei", "drei"},
