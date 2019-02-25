@@ -210,4 +210,10 @@ var _ = Describe("Bunt tests", func() {
 			Expect(Get4bitEquivalentColorAttribute(WhiteSmoke)).To(BeEquivalentTo(Attribute(97)))           // WhiteSmoke matches BrightWhite (#97)
 		})
 	})
+
+	Context("Reported Issues", func() {
+		It("should return the correct text length of a string with ANSI sequences (https://github.com/homeport/gonvenience/issues/10)", func() {
+			Expect(PlainTextLength("\x1b[0;32mINFO \x1b[mNo dependencies found")).To(BeEquivalentTo(len("INFO No dependencies found")))
+		})
+	})
 })

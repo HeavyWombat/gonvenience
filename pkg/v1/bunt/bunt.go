@@ -148,7 +148,7 @@ func BoldText(text string) string {
 
 // RemoveAllEscapeSequences return the input string with all escape sequences removed
 func RemoveAllEscapeSequences(input string) string {
-	escapeSeqFinderRegExp := regexp.MustCompile(seq + `\[\d+(;\d+)*m`)
+	escapeSeqFinderRegExp := regexp.MustCompile(seq + `\[([\d;]*)m`)
 
 	for loc := escapeSeqFinderRegExp.FindStringIndex(input); loc != nil; loc = escapeSeqFinderRegExp.FindStringIndex(input) {
 		start := loc[0]
