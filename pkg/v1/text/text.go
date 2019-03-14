@@ -23,7 +23,10 @@ package text
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 	"time"
+
+	"github.com/homeport/gonvenience/pkg/v1/bunt"
 )
 
 const chars = "abcdefghijklmnopqrstuvwxyz"
@@ -58,4 +61,21 @@ func RandomStringWithPrefix(prefix string, length int) string {
 	}
 
 	return prefix + RandomString(length-len(prefix))
+}
+
+// FixedLength expands or trims the given text to the provided length
+func FixedLength(text string, length int) string {
+	textLength := bunt.PlainTextLength(text)
+
+	switch {
+	case textLength < length: // padding required
+		return text + strings.Repeat(" ", length-textLength)
+
+	case textLength > length:
+		const ellipsis = " [...]"
+		return text[:length-len(ellipsis)] + ellipsis
+
+	default:
+		return text
+	}
 }

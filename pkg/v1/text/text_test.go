@@ -63,4 +63,18 @@ var _ = Describe("Generate random strings with fixed length", func() {
 			RandomStringWithPrefix("foobar", -1)
 		})
 	})
+
+	Context("Text with given fixed length", func() {
+		It("should create a string with the text and enough padding to fill it up to the required length", func() {
+			Expect(FixedLength("Foobar", 10)).To(BeEquivalentTo("Foobar    "))
+		})
+
+		It("should trim the text if the text alone exceeds the provided desired length", func() {
+			Expect(FixedLength("This text is too long", 10)).To(BeEquivalentTo("This [...]"))
+		})
+
+		It("should return the text as-is if it already has the perfect length", func() {
+			Expect(FixedLength("Foobar", 6)).To(BeEquivalentTo("Foobar"))
+		})
+	})
 })
