@@ -73,7 +73,7 @@ func FixedLength(text string, length int) string {
 
 	case textLength > length:
 		const ellipsis = " [...]"
-		return text[:length-len(ellipsis)] + ellipsis
+		return bunt.Substring(text, 0, length-len(ellipsis)) + ellipsis
 
 	default:
 		return text

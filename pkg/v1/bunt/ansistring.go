@@ -22,6 +22,7 @@ package bunt
 
 import (
 	"bytes"
+	"fmt"
 	"regexp"
 	"sort"
 	"strconv"
@@ -249,4 +250,42 @@ func parseString(input string) (*ansiString, error) {
 	}
 
 	return &ansiString{text, sequences}, nil
+}
+
+func (a *ansiString) substring(start int, end int) error {
+	plainTextLength := len(a.text)
+
+	if start < 0 || end > plainTextLength {
+		return fmt.Errorf("start and/or end index is out of bounds")
+	}
+
+	if !(start < end) {
+		return fmt.Errorf("start index must be lower than end index")
+	}
+
+	// TODO Check whether this should be done in parse
+	sort.Slice(a.seqs, func(i, j int) bool {
+		return a.seqs[i].position < a.seqs[j].position
+	})
+
+	// Remove characters from the end of the string and remove all marker entries that were in the removed part of the string
+	a.text = a.text[:end]
+	cutOffPoint := -1
+	for i := range a.seqs {
+		if a.seqs[i].position > end {
+			cutOffPoint = i
+			break
+		}
+	}
+	if cutOffPoint > 0 {
+		a.seqs = a.seqs[:cutOffPoint]
+	}
+
+	// Remove characters from the start and offset the positions in the marker list
+	a.text = a.text[start:]
+	for i := range a.seqs {
+		a.seqs[i].position -= start
+	}
+
+	return nil
 }

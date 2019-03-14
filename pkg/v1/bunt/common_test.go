@@ -1,4 +1,4 @@
-// Copyright © 2018 The Homeport Team
+// Copyright © 2019 The Homeport Team
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,25 +18,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package bunt
+package bunt_test
 
 import (
-	"unicode/utf8"
+	"fmt"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+
+	. "github.com/homeport/gonvenience/pkg/v1/bunt"
 )
 
-// PlainTextLength returns the length of the input text without any ANSI escape sequences.
-func PlainTextLength(text string) int {
-	return utf8.RuneCountInString(RemoveAllEscapeSequences(text))
-}
+var _ = Describe("common functions", func() {
+	BeforeEach(func() {
+		ColorSetting = ON
+		TrueColorSetting = ON
+	})
 
-// Substring returns a substring of a text that contains ANSI escape sequences
-func Substring(text string, start int, end int) string {
-	ansiString, err := parseString(text)
-	if err != nil {
-		panic(err)
-	}
+	Context("Cutting strings with ANSI sequences", func() {
+		It("should work to correctly cut a string with ANSI sequences", func() {
+			input := Substring("Text: \x1b[1mThis\x1b[0m text is too _long_", 6, 22)
+			expected := "\x1b[1mThis\x1b[0m text is too"
 
-	ansiString.substring(start, end)
+			inputRaw := fmt.Sprintf("%#v", input)
+			expectedRaw := fmt.Sprintf("%#v", expected)
 
-	return ansiString.String()
-}
+			Expect(inputRaw).To(BeEquivalentTo(expectedRaw))
+		})
+	})
+})

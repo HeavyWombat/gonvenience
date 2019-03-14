@@ -131,7 +131,7 @@ func (pi *ProgressIndicator) Start() *ProgressIndicator {
 				mainContentText := removeLineFeeds(bunt.Sprintf(pi.format, pi.args...))
 				elapsedTimeText, elapsedTimeColor := pi.timeInfoText(elapsedTime)
 
-				availableSpace := term.GetTerminalWidth() - 3 - bunt.PlainTextLength(elapsedTimeText)
+				availableSpace := term.GetTerminalWidth() - bunt.PlainTextLength(elapsedTimeText) - 4
 
 				// In case a timeout is set, smoothly blend the time info text color from
 				// the provided color into red depending on how much time is left
@@ -143,7 +143,7 @@ func (pi *ProgressIndicator) Start() *ProgressIndicator {
 
 				bunt.Fprint(pi.out,
 					resetLine, " ", pi.nextSymbol(), " ",
-					text.FixedLength(mainContentText, availableSpace),
+					text.FixedLength(mainContentText, availableSpace), " ",
 					bunt.Colorize(elapsedTimeText, elapsedTimeColor),
 				)
 
