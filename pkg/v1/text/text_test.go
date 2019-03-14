@@ -21,10 +21,14 @@
 package text_test
 
 import (
+	"fmt"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
 	. "github.com/homeport/gonvenience/pkg/v1/text"
+
+	"github.com/homeport/gonvenience/pkg/v1/bunt"
 )
 
 var _ = Describe("Generate random strings with fixed length", func() {
@@ -75,6 +79,15 @@ var _ = Describe("Generate random strings with fixed length", func() {
 
 		It("should return the text as-is if it already has the perfect length", func() {
 			Expect(FixedLength("Foobar", 6)).To(BeEquivalentTo("Foobar"))
+		})
+
+		It("should work with text containing ANSI sequences", func() {
+			// "This text is too long" 21 characters
+			// "This text is [...]" 18 characters
+			actual := FixedLength(bunt.Sprintf("*This* text is too long"), 18)
+			expected := bunt.Sprintf("*This* text is [...]")
+
+			Expect(fmt.Sprintf("%#v", actual)).To(BeEquivalentTo(fmt.Sprintf("%#v", expected)))
 		})
 	})
 })

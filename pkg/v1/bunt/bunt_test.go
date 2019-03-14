@@ -215,5 +215,9 @@ var _ = Describe("Bunt tests", func() {
 		It("should return the correct text length of a string with ANSI sequences (https://github.com/homeport/gonvenience/issues/10)", func() {
 			Expect(PlainTextLength("\x1b[0;32mINFO \x1b[mNo dependencies found")).To(BeEquivalentTo(len("INFO No dependencies found")))
 		})
+
+		It("should return the right size when used on strings created by the bunt package", func() {
+			Expect(PlainTextLength(Sprintf("*This* text is too long"))).To(BeEquivalentTo(len(Sprintf("This text is too long"))))
+		})
 	})
 })
