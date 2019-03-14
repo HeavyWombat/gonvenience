@@ -63,6 +63,7 @@ import (
 
 	"github.com/homeport/gonvenience/pkg/v1/bunt"
 	"github.com/homeport/gonvenience/pkg/v1/term"
+	"github.com/homeport/gonvenience/pkg/v1/text"
 )
 
 const resetLine = "\r\x1b[K"
@@ -130,9 +131,7 @@ func (pi *ProgressIndicator) Start() *ProgressIndicator {
 				mainContentText := removeLineFeeds(bunt.Sprintf(pi.format, pi.args...))
 				elapsedTimeText, elapsedTimeColor := pi.timeInfoText(elapsedTime)
 
-				padding := term.GetTerminalWidth() - 3 -
-					bunt.PlainTextLength(mainContentText) -
-					bunt.PlainTextLength(elapsedTimeText)
+				availableSpace := term.GetTerminalWidth() - 3 - bunt.PlainTextLength(elapsedTimeText)
 
 				// In case a timeout is set, smoothly blend the time info text color from
 				// the provided color into red depending on how much time is left
@@ -144,8 +143,7 @@ func (pi *ProgressIndicator) Start() *ProgressIndicator {
 
 				bunt.Fprint(pi.out,
 					resetLine, " ", pi.nextSymbol(), " ",
-					mainContentText,
-					strings.Repeat(" ", padding),
+					text.FixedLength(mainContentText, availableSpace),
 					bunt.Colorize(elapsedTimeText, elapsedTimeColor),
 				)
 
