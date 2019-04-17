@@ -28,6 +28,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/homeport/gonvenience/pkg/v1/term"
 	"github.com/lucasb-eyer/go-colorful"
 )
 
@@ -71,8 +72,14 @@ func markerToSeq(m marker) string {
 	values = append(values, m.codes...)
 
 	if m.fgColor != nil {
-		r, g, b := (*m.fgColor).RGB255()
-		values = append(values, 38, 2, r, g, b)
+		if term.IsTrueColor() {
+			r, g, b := (*m.fgColor).RGB255()
+			values = append(values, 38, 2, r, g, b)
+
+		} else {
+			attr := Get4bitEquivalentColorAttribute(*m.fgColor)
+			values = append(values, uint8(attr))
+		}
 	}
 
 	return ansiSeq(values...)

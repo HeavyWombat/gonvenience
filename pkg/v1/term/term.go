@@ -67,6 +67,14 @@ func GetTerminalHeight() int {
 // used: 80x25. A manual override is possible using FixedTerminalWidth
 // and FixedTerminalHeight.
 func GetTerminalSize() (int, int) {
+	// In case this is a garden container, disable the terminal size detection
+	// and fall back to a reasonable assumption that is a bit bigger in size
+	// than the default terminal fallback dimensions.
+	if FixedTerminalWidth < 0 && FixedTerminalHeight < 0 && IsGardenContainer() {
+		FixedTerminalWidth = 120
+		FixedTerminalHeight = 25
+	}
+
 	// Return user preference (explicit overwrite) of both width and height
 	if FixedTerminalWidth > 0 && FixedTerminalHeight > 0 {
 		return FixedTerminalWidth, FixedTerminalHeight
