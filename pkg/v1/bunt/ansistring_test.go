@@ -22,6 +22,7 @@ package bunt_test
 
 import (
 	"fmt"
+	"os"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -33,6 +34,7 @@ var _ = Describe("ANSI string tests", func() {
 	BeforeEach(func() {
 		ColorSetting = ON
 		TrueColorSetting = ON
+		os.Setenv("COLORTERM", "truecolor")
 	})
 
 	Context("Testing Sprint wrapper function", func() {
