@@ -23,6 +23,7 @@ package text
 import (
 	"fmt"
 	"math/rand"
+	"strconv"
 	"strings"
 	"time"
 
@@ -41,7 +42,7 @@ func RandomString(length int) string {
 		panic(fmt.Errorf("negative length value"))
 	}
 
-	tmp := make([]byte, length, length)
+	tmp := make([]byte, length)
 	for i := range tmp {
 		tmp[i] = chars[rand.Intn(len(chars))]
 	}
@@ -77,5 +78,36 @@ func FixedLength(text string, length int) string {
 
 	default:
 		return text
+	}
+}
+
+// Plural returns a string with the number and noun in either singular or plural form.
+// If one text argument is given, the plural will be done with the plural s. If two
+// arguments are provided, the second text is the irregular plural. If more than two
+// are provided, then the additional ones are simply ignored.
+func Plural(amount int, text ...string) string {
+	words := [...]string{"no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"}
+
+	var number string
+	if amount < len(words) {
+		number = words[amount]
+	} else {
+		number = strconv.Itoa(amount)
+	}
+
+	switch len(text) {
+	case 1:
+		if amount == 1 {
+			return fmt.Sprintf("%s %s", number, text[0])
+		}
+
+		return fmt.Sprintf("%s %ss", number, text[0])
+
+	default:
+		if amount == 1 {
+			return fmt.Sprintf("%s %s", number, text[0])
+		}
+
+		return fmt.Sprintf("%s %s", number, text[1])
 	}
 }
