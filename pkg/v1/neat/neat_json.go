@@ -102,19 +102,19 @@ func (p *OutputProcessor) ToCompactJSON(obj interface{}) (string, error) {
 }
 
 func (p *OutputProcessor) neatJSON(prefix string, obj interface{}) (string, error) {
-	switch obj.(type) {
+	switch t := obj.(type) {
 	case yaml.MapSlice:
-		if err := p.neatJSONofYAMLMapSlice(prefix, obj.(yaml.MapSlice)); err != nil {
+		if err := p.neatJSONofYAMLMapSlice(prefix, t); err != nil {
 			return "", err
 		}
 
 	case []interface{}:
-		if err := p.neatJSONofSlice(prefix, obj.([]interface{})); err != nil {
+		if err := p.neatJSONofSlice(prefix, t); err != nil {
 			return "", err
 		}
 
 	case []yaml.MapSlice:
-		if err := p.neatJSONofSlice(prefix, p.simplify(obj.([]yaml.MapSlice))); err != nil {
+		if err := p.neatJSONofSlice(prefix, p.simplify(t)); err != nil {
 			return "", err
 		}
 

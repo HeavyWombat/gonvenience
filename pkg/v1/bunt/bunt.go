@@ -184,7 +184,7 @@ func BreakUpStringIntoColorSegments(input string) (String, error) {
 			var value int
 			var err error
 			if value, err = strconv.Atoi(attribute); err != nil {
-				return nil, fmt.Errorf("Failed to split input string in its colored segments: %s", err.Error())
+				return nil, fmt.Errorf("failed to split input string in its colored segments: %s", err.Error())
 			}
 
 			attributes = append(attributes, Attribute(value))

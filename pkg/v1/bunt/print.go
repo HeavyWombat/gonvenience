@@ -35,9 +35,9 @@ func evaluateInputs(in ...interface{}) []interface{} {
 }
 
 func evaluateInput(in interface{}) interface{} {
-	switch in.(type) {
+	switch str := in.(type) {
 	case string:
-		return evaluateString(in.(string))
+		return evaluateString(str)
 	}
 
 	return in
