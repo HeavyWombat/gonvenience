@@ -27,10 +27,13 @@ import (
 	"github.com/homeport/gonvenience/pkg/v1/bunt"
 )
 
+// TableOption defines options/settings for tables.
 type TableOption func(*options)
 
+// Alignment defines the text alignment option for a table cell.
 type Alignment int
 
+// Table cells support three types of alignment: left, right, center.
 const (
 	Left Alignment = iota
 	Right
@@ -60,6 +63,7 @@ func defaultOptions(cols int) options {
 	}
 }
 
+// VertialBarSeparator sets a solid veritcal bar as the column separator.
 func VertialBarSeparator() TableOption {
 	return func(opts *options) {
 		opts.separator = " │ "
@@ -73,12 +77,14 @@ func CustomSeparator(separator string) TableOption {
 	}
 }
 
+// DesiredWidth sets the desired width of the table
 func DesiredWidth(width int) TableOption {
 	return func(opts *options) {
 		opts.desiredRowWidth = width
 	}
 }
 
+// AlignRight sets alignment to right for the given columns (referenced by index)
 func AlignRight(cols ...int) TableOption {
 	return func(opts *options) {
 		for _, col := range cols {
@@ -91,6 +97,7 @@ func AlignRight(cols ...int) TableOption {
 	}
 }
 
+// AlignCenter sets alignment to center for the given columns (referenced by index)
 func AlignCenter(cols ...int) TableOption {
 	return func(opts *options) {
 		for _, col := range cols {
@@ -103,6 +110,7 @@ func AlignCenter(cols ...int) TableOption {
 	}
 }
 
+// Table renders a string with a well spaced and aligned table output
 func Table(table [][]string, tableOptions ...TableOption) (string, error) {
 	if len(table) == 0 {
 		return "", &EmptyTableError{}
