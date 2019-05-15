@@ -95,10 +95,10 @@ type ProgressIndicator struct {
 // supplied during runtime.
 func NewProgressIndicator(format string, args ...interface{}) *ProgressIndicator {
 	return &ProgressIndicator{
-		out:          os.Stdout,
+		out:          os.Stderr,
 		format:       format,
 		args:         args,
-		spin:         term.IsTerminal() && !term.IsDumbTerminal(),
+		spin:         !term.IsDumbTerminal(),
 		timeout:      0 * time.Second,
 		timeInfoText: TimeInfoText,
 	}
