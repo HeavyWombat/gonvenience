@@ -94,7 +94,7 @@ func (p *OutputProcessor) colorize(text string, colorName string) string {
 func (p *OutputProcessor) determineColorByType(obj interface{}) string {
 	color := "scalarDefaultColor"
 
-	switch obj.(type) {
+	switch t := obj.(type) {
 	case bool:
 		color = "boolColor"
 
@@ -105,7 +105,7 @@ func (p *OutputProcessor) determineColorByType(obj interface{}) string {
 		color = "intColor"
 
 	case string:
-		if len(strings.Split(strings.TrimSpace(obj.(string)), "\n")) > 1 {
+		if len(strings.Split(strings.TrimSpace(t), "\n")) > 1 {
 			color = "multiLineTextColor"
 		}
 	}

@@ -54,19 +54,19 @@ func (p *OutputProcessor) ToYAML(obj interface{}) (string, error) {
 }
 
 func (p *OutputProcessor) neatYAML(prefix string, skipIndentOnFirstLine bool, obj interface{}) error {
-	switch obj.(type) {
+	switch t := obj.(type) {
 	case yaml.MapSlice:
-		if err := p.neatYAMLofMapSlice(prefix, skipIndentOnFirstLine, obj.(yaml.MapSlice)); err != nil {
+		if err := p.neatYAMLofMapSlice(prefix, skipIndentOnFirstLine, t); err != nil {
 			return err
 		}
 
 	case []interface{}:
-		if err := p.neatYAMLofSlice(prefix, skipIndentOnFirstLine, obj.([]interface{})); err != nil {
+		if err := p.neatYAMLofSlice(prefix, skipIndentOnFirstLine, t); err != nil {
 			return err
 		}
 
 	case []yaml.MapSlice:
-		if err := p.neatYAMLofSlice(prefix, skipIndentOnFirstLine, p.simplify(obj.([]yaml.MapSlice))); err != nil {
+		if err := p.neatYAMLofSlice(prefix, skipIndentOnFirstLine, p.simplify(t)); err != nil {
 			return err
 		}
 
