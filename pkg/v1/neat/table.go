@@ -112,18 +112,14 @@ func AlignCenter(cols ...int) TableOption {
 
 // Table renders a string with a well spaced and aligned table output
 func Table(table [][]string, tableOptions ...TableOption) (string, error) {
-	if len(table) == 0 {
-		return "", &EmptyTableError{}
+	maxs, err := lookupMaxLengthPerColumn(table)
+	if err != nil {
+		return "", err
 	}
 
-	cols := len(table[0])
-	for _, row := range table {
-		if len(row) != cols {
-			return "", &ImbalancedTableError{}
-		}
-	}
-
+	cols := len(maxs)
 	options := defaultOptions(cols)
+
 	for _, userOption := range tableOptions {
 		userOption(&options)
 	}
@@ -132,22 +128,10 @@ func Table(table [][]string, tableOptions ...TableOption) (string, error) {
 		return "", options.errors[0]
 	}
 
-	maxs := make([]int, cols)
-	for _, row := range table {
-		for y, cell := range row {
-			if max := bunt.PlainTextLength(cell); max > maxs[y] {
-				maxs[y] = max
-			}
-		}
-	}
-
 	var buf bytes.Buffer
 	for _, row := range table {
 		if options.desiredRowWidth > 0 {
-			var rawRowWidth int
-			for y := range row {
-				rawRowWidth += maxs[y] + bunt.PlainTextLength(options.separator)
-			}
+			rawRowWidth := lookupPlainRowLength(row, maxs, options.separator)
 
 			if rawRowWidth > options.desiredRowWidth {
 				return "", &RowLengthExceedsDesiredWidthError{}
@@ -194,4 +178,38 @@ func Table(table [][]string, tableOptions ...TableOption) (string, error) {
 	}
 
 	return buf.String(), nil
+}
+
+func lookupMaxLengthPerColumn(table [][]string) ([]int, error) {
+	if len(table) == 0 {
+		return nil, &EmptyTableError{}
+	}
+
+	cols := len(table[0])
+	for _, row := range table {
+		if len(row) != cols {
+			return nil, &ImbalancedTableError{}
+		}
+	}
+
+	maxs := make([]int, cols)
+	for _, row := range table {
+		for y, cell := range row {
+			if max := bunt.PlainTextLength(cell); max > maxs[y] {
+				maxs[y] = max
+			}
+		}
+	}
+
+	return maxs, nil
+}
+
+func lookupPlainRowLength(row []string, maxs []int, separator string) int {
+	var length int
+
+	for i := range row {
+		length += maxs[i] + bunt.PlainTextLength(separator)
+	}
+
+	return length
 }
