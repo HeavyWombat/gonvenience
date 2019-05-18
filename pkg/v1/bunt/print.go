@@ -58,7 +58,7 @@ func Print(a ...interface{}) (n int, err error) {
 
 // Printf wraps fmt.Printf(format string, a ...interface{}) and evaluates any text markers into its respective format
 func Printf(format string, a ...interface{}) (n int, err error) {
-	return fmt.Printf(evaluateString(format), evaluateInputs(a...)...)
+	return fmt.Printf(evaluateString(format), a...)
 }
 
 // Println wraps fmt.Println(a ...interface{}) and evaluates any text markers into its respective format
@@ -73,7 +73,7 @@ func Fprint(w io.Writer, a ...interface{}) (n int, err error) {
 
 // Fprintf wraps fmt.Fprintf(w io.Writer, format string, a ...interface{}) and evaluates any text markers into its respective format
 func Fprintf(w io.Writer, format string, a ...interface{}) (n int, err error) {
-	return fmt.Fprintf(w, evaluateString(format), evaluateInputs(a...)...)
+	return fmt.Fprintf(w, evaluateString(format), a...)
 }
 
 // Fprintln wraps fmt.Fprintln(w io.Writer, a ...interface{}) and evaluates any text markers into its respective format
@@ -88,7 +88,7 @@ func Sprint(a ...interface{}) string {
 
 // Sprintf wraps fmt.Sprintf(format string, a ...interface{}) and evaluates any text markers into its respective format
 func Sprintf(format string, a ...interface{}) string {
-	return fmt.Sprintf(evaluateString(format), evaluateInputs(a...)...)
+	return fmt.Sprintf(evaluateString(format), a...)
 }
 
 // Sprintln wraps fmt.Sprintln(a ...interface{}) and evaluates any text markers into its respective format
