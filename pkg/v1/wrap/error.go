@@ -54,3 +54,8 @@ func (e *wrappedError) Cause() error {
 func Error(err error, context string) error {
 	return &wrappedError{context, err}
 }
+
+// Errorf creates an error with additional formatted context
+func Errorf(err error, format string, a ...interface{}) error {
+	return &wrappedError{fmt.Sprintf(format, a...), err}
+}
