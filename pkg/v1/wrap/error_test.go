@@ -30,9 +30,11 @@ import (
 )
 
 var _ = Describe("wrap package tests", func() {
+	var exampleErr = fmt.Errorf("failed to do x, because of y")
+
 	Context("wrapping errors in context", func() {
 		var err = Error(
-			fmt.Errorf("failed to do x, because of y"),
+			exampleErr,
 			"issue setting up z",
 		)
 
@@ -59,6 +61,18 @@ var _ = Describe("wrap package tests", func() {
 			default:
 				Fail("failed to type cast to ContextError")
 			}
+		})
+	})
+
+	Context("projects using wrap package", func() {
+		It("should be possible to use an error to wrap with context", func() {
+			err := Errorf(exampleErr,
+				"unable to set up %s and %s",
+				"A",
+				"B")
+
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(BeEquivalentTo("unable to set up A and B: failed to do x, because of y"))
 		})
 	})
 })
