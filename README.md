@@ -1,9 +1,10 @@
 # gonvenience
 
-[![License](https://img.shields.io/github/license/homeport/gonvenience.svg)](https://github.com/homeport/gonvenience/blob/master/LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/homeport/gonvenience)](https://goreportcard.com/report/github.com/homeport/gonvenience)
-[![Build Status](https://travis-ci.org/homeport/gonvenience.svg?branch=master)](https://travis-ci.org/homeport/gonvenience)
-[![GoDoc](https://godoc.org/github.com/homeport/gonvenience/pkg?status.svg)](https://godoc.org/github.com/homeport/gonvenience/pkg)
-[![Release](https://img.shields.io/github/release/homeport/gonvenience.svg)](https://github.com/homeport/gonvenience/releases/latest)
+*Please note:* This repository will be discontinued. The Go convenience packages in this project were moved into separate GitHub projects:
 
-Convenience packages for Go projects
+- https://github.com/gonvenience/bunt
+- https://github.com/gonvenience/wait
+- https://github.com/gonvenience/wrap
+- https://github.com/gonvenience/neat
+- https://github.com/gonvenience/text
+- https://github.com/gonvenience/term
